@@ -3,6 +3,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
 
 public class SeleniumClickButtonOperations {
 
@@ -32,8 +33,39 @@ public class SeleniumClickButtonOperations {
         /**
          * getText() method is used to get text from the webpage element which we can locate by writing xpath
          */
-        String verifyText = driver.findElement(By.xpath("//*[text()=\"You have done a dynamic click\"]")).getText();
+        String verifyText;
+        verifyText = driver.findElement(By.xpath("//*[text()=\"You have done a dynamic click\"]")).getText();
         if (verifyText.equals("You have done a dynamic click")) {
+            System.out.println("Test case passed");
+        } else {
+            System.out.println("Test case failed");
+        }
+
+        /**
+         *how to do double click in selenium?
+         * We can use Actions class in selenium
+         */
+        WebElement doubleClickButton = driver.findElement(By.xpath("//button[text()=\"Double Click Me\"]"));
+        scrollIntoElement(doubleClickButton);
+
+        Actions actions = new Actions(driver);
+        actions.doubleClick(doubleClickButton).build().perform();
+        verifyText = driver.findElement(By.xpath("//*[text()=\"You have done a double click\"]")).getText();
+        if (verifyText.equals("You have done a double click")) {
+            System.out.println("Test case passed");
+        } else {
+            System.out.println("Test case failed");
+        }
+        /**
+         * how to do right click in selenium?
+         * We can use Actions class in selenium
+         */
+        WebElement contextClickButton = driver.findElement(By.xpath("//button[text()=\"Right Click Me\"]"));
+        scrollIntoElement(contextClickButton);
+
+        actions.contextClick(contextClickButton).build().perform();
+        verifyText = driver.findElement(By.xpath("//*[text()=\"You have done a right click\"]")).getText();
+        if (verifyText.equals("You have done a right click")) {
             System.out.println("Test case passed");
         } else {
             System.out.println("Test case failed");
