@@ -1,5 +1,5 @@
 
-# Project Title
+# Selenium Framework & Basics
 
 This repository serves following purposes:
 
