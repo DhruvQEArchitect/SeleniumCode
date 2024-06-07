@@ -27,7 +27,7 @@ public class SeleniumClickButtonOperations {
         //We use WebElement to locate elements on a website to perform operations on it
         WebElement clickMeButton = driver.findElement(By.xpath("//*[text()=\"Click Me\"]"));
 
-        scrollIntoElement(clickMeButton);
+        scrollIntoElement(clickMeButton, driver);
         clickMeButton.click();
 
         /**
@@ -46,7 +46,7 @@ public class SeleniumClickButtonOperations {
          * We can use Actions class in selenium
          */
         WebElement doubleClickButton = driver.findElement(By.xpath("//button[text()=\"Double Click Me\"]"));
-        scrollIntoElement(doubleClickButton);
+        scrollIntoElement(doubleClickButton, driver);
 
         Actions actions = new Actions(driver);
         actions.doubleClick(doubleClickButton).build().perform();
@@ -61,7 +61,7 @@ public class SeleniumClickButtonOperations {
          * We can use Actions class in selenium
          */
         WebElement contextClickButton = driver.findElement(By.xpath("//button[text()=\"Right Click Me\"]"));
-        scrollIntoElement(contextClickButton);
+        scrollIntoElement(contextClickButton, driver);
 
         actions.contextClick(contextClickButton).build().perform();
         verifyText = driver.findElement(By.xpath("//*[text()=\"You have done a right click\"]")).getText();
@@ -75,7 +75,7 @@ public class SeleniumClickButtonOperations {
         driver.quit();
     }
 
-    static void scrollIntoElement(WebElement element) {
+    static void scrollIntoElement(WebElement element, WebDriver driver) {
         JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
         javascriptExecutor.executeScript("arguments[0].scrollIntoView(true);", element);
     }
