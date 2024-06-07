@@ -1,5 +1,5 @@
 
-# Selenium Framework & Basics
+# Selenium Basics & Framework
 
 This repository serves following purposes:
 
