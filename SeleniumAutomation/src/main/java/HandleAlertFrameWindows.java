@@ -25,7 +25,7 @@ public class HandleAlertFrameWindows {
         driver.manage().window().maximize();
 
         WebElement alertButton = driver.findElement(By.xpath("//button[@id='alertButton']"));
-        SeleniumClickButtonOperations.scrollIntoElement(alertButton,driver);
+        SeleniumClickButtonOperations.scrollIntoElement(alertButton, driver);
         alertButton.click();
 
         //to switch to alert and get text from alert
@@ -33,6 +33,9 @@ public class HandleAlertFrameWindows {
         if (alertText.equals("You clicked a button"))
             System.out.println("passed");
         else System.out.println("failed");
+
+        //to accept an alert
+        driver.switchTo().alert().accept();
 
         driver.quit();
     }
