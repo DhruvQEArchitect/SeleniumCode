@@ -3,6 +3,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 public class HandleAlertFrameWindows {
     /**
      * In this class we are going to see how to handle alerts, frames, multiple windows in selenium
@@ -19,10 +22,9 @@ public class HandleAlertFrameWindows {
 
         // This line is used to initiate chrome driver
         driver = new ChromeDriver();
-
+        driver.manage().window().maximize();
         //This line is used to launch a site
 //        driver.get("https://demoqa.com/alerts");
-//        driver.manage().window().maximize();
 //
 //        WebElement alertButton = driver.findElement(By.xpath("//button[@id='alertButton']"));
 //        SeleniumClickButtonOperations.scrollIntoElement(alertButton, driver);
@@ -40,22 +42,43 @@ public class HandleAlertFrameWindows {
         /**
          * Below code will handle frame
          */
-        driver.get("https://demoqa.com/frames");
-        driver.manage().window().maximize();
-        driver.switchTo().frame("frame1");
-        WebElement frame1Text = driver.findElement(By.xpath("//h1[@id='sampleHeading']"));
-        SeleniumClickButtonOperations.scrollIntoElement(frame1Text, driver);
-        System.out.println("Frame1 Text: " + frame1Text.getText());
+//        driver.get("https://demoqa.com/frames");
+//        driver.switchTo().frame("frame1");
+//        WebElement frame1Text = driver.findElement(By.xpath("//h1[@id='sampleHeading']"));
+//        SeleniumClickButtonOperations.scrollIntoElement(frame1Text, driver);
+//        System.out.println("Frame1 Text: " + frame1Text.getText());
 
         /**
          * Switch back to default frame or parent window to handle elements on main webpage outside of frame
          */
-        driver.switchTo().defaultContent();
-        WebElement parentWinText = driver.findElement(By.xpath("//*[contains(text(),'Sample Iframe page There')]"));
-        if (parentWinText.isDisplayed()) {
-            System.out.println("passed");
-        } else System.out.println("failed");
+//        driver.switchTo().defaultContent();
+//        WebElement parentWinText = driver.findElement(By.xpath("//*[contains(text(),'Sample Iframe page There')]"));
+//        if (parentWinText.isDisplayed()) {
+//            System.out.println("passed");
+//        } else System.out.println("failed");
 
+        /**
+         * Below snippet will handle a new tab opened
+         */
+        driver.get("https://demoqa.com/browser-windows");
+        WebElement newTabButton = driver.findElement(By.xpath("//button[text()=\"New Tab\"]"));
+        SeleniumClickButtonOperations.scrollIntoElement(newTabButton, driver);
+        newTabButton.click();
+        LinkedHashSet<String> newTabOpenedId = (LinkedHashSet<String>) driver.getWindowHandles(); // to get the handle of the newly opened tab
+        String parentWinId = driver.getWindowHandle();
+        for (String childWin : newTabOpenedId) {
+            if (!childWin.equals(parentWinId)) {
+                driver.switchTo().window(childWin);
+                if (driver.findElement(By.xpath("//*[text()='This is a sample page']")).getText().equals("This is a sample page")) {
+                    System.out.println("passed");
+                } else System.out.println("failed");
+            }
+        }
+
+        driver.switchTo().window(parentWinId); //switch back to parent window
+        if (driver.getTitle().equals("DEMOQA"))
+            System.out.println("switched back to parent window successfully");
+        else System.out.println("switching to parent window failed");
         driver.quit();
     }
 }
