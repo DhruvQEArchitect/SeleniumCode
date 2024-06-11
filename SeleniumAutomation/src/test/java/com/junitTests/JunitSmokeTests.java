@@ -1,4 +1,4 @@
-package jjunit;
+package com.junitTests;
 
 import org.junit.Test;
 

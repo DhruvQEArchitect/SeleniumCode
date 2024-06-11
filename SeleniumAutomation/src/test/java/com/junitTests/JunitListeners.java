@@ -1,4 +1,4 @@
-package jjunit;
+package com.junitTests;
 
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
