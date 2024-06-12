@@ -1,5 +1,6 @@
 package com.testNGTests;
 
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 /**
@@ -7,13 +8,29 @@ import org.testng.annotations.Test;
  */
 public class SanityTests {
 
-    @Test
+    @Test(priority = 0, dependsOnGroups = "shakedown", description = "Sanity test case 1")
     public void sanityTest1() {
         System.out.println("Executing sanity test 1");
     }
 
-    @Test
+    @Test(priority = 2)
     public void sanityTest2() {
         System.out.println("Executing sanity test 2");
+    }
+
+    @Test(priority = 1, enabled = false)
+    public void sanityTest3() {
+        System.out.println("Executing sanity test 3");
+    }
+
+    @Ignore
+    @Test(priority = 3)
+    public void sanityTest4() {
+        System.out.println("Executing sanity test 4");
+    }
+
+    @Test(groups = "shakedown")
+    public void shakedownTest() {
+        System.out.println("Execute shakedown tests after code deployment");
     }
 }

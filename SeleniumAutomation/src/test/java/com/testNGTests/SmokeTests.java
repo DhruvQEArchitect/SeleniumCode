@@ -16,4 +16,9 @@ public class SmokeTests {
     public void smokeTest2() {
         System.out.println("Executing smoke test 2");
     }
+
+    @Test(groups = "shakedown")
+    public void shakedownTest() {
+        System.out.println("Executing shakedown test before smoke tests");
+    }
 }
