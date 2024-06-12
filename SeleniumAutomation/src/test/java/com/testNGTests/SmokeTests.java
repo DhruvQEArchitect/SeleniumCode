@@ -1,5 +1,7 @@
 package com.testNGTests;
 
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 /**
@@ -18,7 +20,16 @@ public class SmokeTests {
     }
 
     @Test(groups = "shakedown")
-    public void shakedownTest() {
-        System.out.println("Executing shakedown test before smoke tests");
+    @Parameters({"environment"})
+    public void shakedownTest(@Optional("default") String environment) {
+        System.out.println("Executing shakedown test before smoke tests in environment: " + environment);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void expectionTest() {
+        String str = null;
+        System.out.println(str.length());
+        System.out.println("Testing exception test");
+
     }
 }
