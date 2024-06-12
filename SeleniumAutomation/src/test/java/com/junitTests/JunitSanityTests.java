@@ -3,7 +3,7 @@ package com.junitTests;
 import org.junit.*;
 
 /**
- * Creating sample sanity tests with different annotationss
+ * Creating sample sanity tests with different annotations
  */
 public class JunitSanityTests {
 
@@ -25,6 +25,12 @@ public class JunitSanityTests {
     @Test
     public void sanityTest2() {
         System.out.println("Running sanity test 2");
+    }
+
+    @Test
+    @Ignore
+    public void sanityTest3() {
+        System.out.println("Running sanity test 3");
     }
 
     @After
