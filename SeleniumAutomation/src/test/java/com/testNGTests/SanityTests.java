@@ -1,14 +1,16 @@
 package com.testNGTests;
 
 import org.testng.annotations.Ignore;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 /**
  * Sanity tests using TestNG annotations
  */
+@Listeners(TestNGListeners.class)
 public class SanityTests {
 
-    @Test(priority = 0, dependsOnGroups = "shakedown", description = "Sanity test case 1")
+    @Test(priority = 0, dependsOnGroups = "shakedown", description = "Sanity test case 1", testName = "First sanity verification test")
     public void sanityTest1() {
         System.out.println("Executing sanity test 1");
     }
