@@ -3,6 +3,9 @@ Creating a testng.xml file which can be used to trigger testng test cases/test s
 -->
 <suite name="TestNG Test Suite">
     <test name="TestNG Golden Config Tests">
+        <listeners>
+            <listener class-name="com.testNGTests.TestNGListeners"/>
+        </listeners>
         <classes>
             <class name="com.testNGTests.SanityTests"/>
             <class name="com.testNGTests.SmokeTests"/>
