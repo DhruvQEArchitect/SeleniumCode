@@ -5,6 +5,7 @@ import com.utils.ReadProperties;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
 
 /**
  * This is the base class for all pages which contains all the basic elements operation like clicking/checking visibility
@@ -28,8 +29,23 @@ public class Pages {
 
     public WebDriver initiateDriver() {
         String path = System.getProperty("user.dir");
-        System.setProperty("webdriver.chrome.driver", path + "/Drivers/chromedriver.exe");
-        driver = new ChromeDriver();
+        String browserName = "";
+        try {
+            browserName = readProperties.getPropValue("browser");
+        } catch (Exception ex) {
+            System.out.println("Browser not found. Please provide valid input");
+        }
+        switch (browserName) {
+            case "CHROME":
+                System.setProperty("webdriver.chrome.driver", path + "/Drivers/chromedriver.exe");
+                driver = new ChromeDriver();
+            case "IE":
+                System.setProperty("webdriver.ie.driver", path + "/Drivers/IEDriverServer.exe");
+                driver = new InternetExplorerDriver();
+            default:
+                System.setProperty("webdriver.chrome.driver", path + "/Drivers/chromedriver.exe");
+                driver = new ChromeDriver();
+        }
         return driver;
     }
 
