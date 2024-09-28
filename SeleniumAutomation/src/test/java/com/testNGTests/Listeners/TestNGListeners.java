@@ -1,4 +1,4 @@
-package com.testNGTests;
+package com.testNGTests.Listeners;
 
 import org.testng.ITestListener;
 import org.testng.ITestResult;
@@ -19,5 +19,9 @@ public class TestNGListeners implements ITestListener {
     public void onTestSuccess(ITestResult result) {
         System.out.println("Test success: " + result.getName());
     }
-    
+
+    @Override
+    public void onTestSkipped(ITestResult result) {
+        System.out.println("Test skipped: " + result.getName());
+    }
 }

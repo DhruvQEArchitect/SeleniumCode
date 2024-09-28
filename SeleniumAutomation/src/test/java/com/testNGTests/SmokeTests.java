@@ -1,5 +1,7 @@
 package com.testNGTests;
 
+import com.testNGTests.Listeners.RetryLogic;
+import org.junit.Assert;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
@@ -31,5 +33,14 @@ public class SmokeTests {
         System.out.println(str.length());
         System.out.println("Testing exception test");
 
+    }
+
+    /**
+     * This test will not fail until the final counter
+     * in the retry logic class is reached beyond its limit
+     */
+    @Test(retryAnalyzer = RetryLogic.class)
+    public void retryTestCase() {
+        Assert.assertEquals(true, false);
     }
 }
