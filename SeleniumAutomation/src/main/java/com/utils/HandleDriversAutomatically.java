@@ -1,5 +1,6 @@
 package com.utils;
 
+import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.json.simple.JSONObject;
@@ -14,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -25,7 +27,7 @@ public class HandleDriversAutomatically {
         String version = "";
         BufferedReader bufferedReader;
         try {
-            switch (readProperties.getPropValue("browserName")) {
+            switch (readProperties.getPropValue("browser")) {
                 case "CHROME":
                     browserProcess = Runtime.getRuntime().exec("powershell -command \"&{(Get-Item 'C:/Program Files/Google/Chrome/Application/chrome.exe').VersionInfo.ProductVersion}\"");
                     bufferedReader = new BufferedReader(new InputStreamReader(browserProcess.getInputStream()));
@@ -83,40 +85,45 @@ public class HandleDriversAutomatically {
     public void downloadLatestChromeDriver() {
         String systemType;
         URL url;
+        Path filePath = Path.of(System.getProperty("user.dir") + Paths.get("/Drivers") + File.separator);
         String version = getLatestStableChromeDriverVersion();
-        try {
-            systemType = readProperties.getPropValue("systemType");
-            if (SystemUtils.IS_OS_WINDOWS) {
-                url = new URL("https://storage.googleapis.com/chrome-for-testing-public/" + version + "/win" + systemType + "/chromedriver-win" + systemType + ".zip");
-                Path filePath = Path.of(System.getProperty("user.dir") + Paths.get("/Drivers") + File.separator);
-                if (Files.exists(filePath)) {
-                    new FileOutputStream(filePath + "/ChromeDriver.zip").getChannel().transferFrom(Channels.newChannel(url.openStream()), 0, Long.MAX_VALUE);
-                } else {
-                    File dir = new File(String.valueOf(filePath));
-                    dir.mkdirs();
+        if (version.contains(getInstalledChromeDriverVersion())) {
+            System.out.println("Already latest version of driver is installed as per the browser installed in the system");
+        } else {
+            try {
+                systemType = readProperties.getPropValue("systemType");
+                if (SystemUtils.IS_OS_WINDOWS) {
+                    url = new URL("https://storage.googleapis.com/chrome-for-testing-public/" + version + "/win" + systemType + "/chromedriver-win" + systemType + ".zip");
+                    if (Files.exists(filePath)) {
+                        new FileOutputStream(filePath + "/ChromeDriver.zip").getChannel().transferFrom(Channels.newChannel(url.openStream()), 0, Long.MAX_VALUE);
+                    } else {
+                        File dir = new File(String.valueOf(filePath));
+                        dir.mkdirs();
+                        new FileOutputStream(filePath + "/ChromeDriver.zip").getChannel().transferFrom(Channels.newChannel(url.openStream()), 0, Long.MAX_VALUE);
+                    }
+                    unzipFolder(Path.of(filePath + "/ChromeDriver.zip"), Path.of(filePath + "/ChromeDriver/"));
+
                 }
-                unzipFolder(Path.of(filePath + "/ChromeDriver.zip"), Path.of(filePath + "/ChromeDriver/"));
+                if (SystemUtils.IS_OS_LINUX) {
+                    url = new URL("https://storage.googleapis.com/chrome-for-testing-public/" + version + "/linux64/chromedriver-linux64.zip");
+
+                    if (Files.exists(filePath)) {
+                        new FileOutputStream(filePath + "/ChromeDriver.zip").getChannel().transferFrom(Channels.newChannel(url.openStream()), 0, Long.MAX_VALUE);
+                    } else {
+                        File dir = new File(String.valueOf(filePath));
+                        dir.mkdirs();
+                    }
+                    Path source = Path.of(filePath + "/ChromeDriver.zip");
+                    unzipFolder(source, Path.of(String.valueOf(filePath) + "/ChromeDriver/"));
+
+                }
+            } catch (Exception ex) {
 
             }
-            if (SystemUtils.IS_OS_LINUX) {
-                url = new URL("https://storage.googleapis.com/chrome-for-testing-public/" + version + "/linux64/chromedriver-linux64.zip");
-                Path filePath = Path.of(System.getProperty("user.dir") + Paths.get("/Drivers") + File.separator);
-                if (Files.exists(filePath)) {
-                    new FileOutputStream(filePath + "/ChromeDriver.zip").getChannel().transferFrom(Channels.newChannel(url.openStream()), 0, Long.MAX_VALUE);
-                } else {
-                    File dir = new File(String.valueOf(filePath));
-                    dir.mkdirs();
-                }
-                Path source = Path.of(filePath + "/ChromeDriver.zip");
-                unzipFolder(source, Path.of(String.valueOf(filePath) + "/ChromeDriver/"));
-                Files.delete(source);
-            }
-        } catch (Exception ex) {
-
         }
     }
 
-    public static void unzipFolder(Path source, Path target) throws IOException {
+    public void unzipFolder(Path source, Path target) throws IOException {
         try (ZipInputStream zis = new ZipInputStream(new FileInputStream(source.toFile()))) {
             ZipEntry zipEntry = zis.getNextEntry();
             while (zipEntry != null) {
@@ -142,7 +149,7 @@ public class HandleDriversAutomatically {
     }
 
     // protect zip slip attack
-    public static Path zipSlipProtect(ZipEntry zipEntry, Path targetDir)
+    public Path zipSlipProtect(ZipEntry zipEntry, Path targetDir)
             throws IOException {
         Path targetDirResolved = targetDir.resolve(zipEntry.getName());
         Path normalizePath = targetDirResolved.normalize();
@@ -153,23 +160,29 @@ public class HandleDriversAutomatically {
         return normalizePath;
     }
 
-    public static String getInstalledChromeDriverVersion() {
+    public String getInstalledChromeDriverVersion() {
         Process driverProcess;
         String driverVersion = "";
+        String systemType = "64";
         BufferedReader bufferedReader;
+        String[] tempVersion;
+        StringTokenizer stringTokenizer;
         Path filePath = Path.of(System.getProperty("user.dir") + Paths.get("/Drivers/ChromeDriver") + File.separator);
         if (Files.exists(filePath)) {
             try {
-                driverProcess = Runtime.getRuntime().exec("powershell -command \"&{(Get-Item '" + filePath + "/chromedriver.exe').VersionInfo.ProductVersion}\"");
+                driverProcess = Runtime.getRuntime().exec(System.getProperty("user.dir") + Paths.get("/Drivers/ChromeDriver") + "/chromedriver-win" + systemType + "/chromedriver.exe -version");
                 bufferedReader = new BufferedReader(new InputStreamReader(driverProcess.getInputStream()));
                 while ((driverVersion = bufferedReader.readLine()) != null) {
-                    return driverVersion;
+                    tempVersion = driverVersion.split(" ");
+                    driverVersion = tempVersion[1];
+                    stringTokenizer = new StringTokenizer(driverVersion, ".");
+                    return stringTokenizer.nextToken();
                 }
             } catch (Exception ex) {
 
             }
         }
-        return driverVersion;
+        return "does not exist";
     }
 
 
