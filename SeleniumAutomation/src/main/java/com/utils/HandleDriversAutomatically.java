@@ -20,7 +20,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class HandleDriversAutomatically {
-    ReadProperties readProperties;
+    ReadProperties readProperties = ReadProperties.getInstance();
 
     public String getInstalledBrowserVersion() {
         Process browserProcess;
