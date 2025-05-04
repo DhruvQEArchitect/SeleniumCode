@@ -22,6 +22,14 @@ import java.util.zip.ZipInputStream;
 public class HandleDriversAutomatically {
     ReadProperties readProperties = ReadProperties.getInstance();
 
+    private static HandleDriversAutomatically instance = null;
+
+    public static HandleDriversAutomatically getInstance() {
+        if (instance == null)
+            instance = new HandleDriversAutomatically();
+        return instance;
+    }
+
     public String getInstalledBrowserVersion() {
         Process browserProcess;
         String version = "";
